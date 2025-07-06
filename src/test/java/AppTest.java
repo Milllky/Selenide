@@ -26,13 +26,15 @@ public class AppTest {
     void test() {
         Selenide.open("http://localhost:9999");
         $("[data-test-id='date'] input").press(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
-        $("[data-test-id='date'] input").setValue(dateGenerator(7, "dd/MM/yyyy"));
+        String genDate = dateGenerator(7, "dd.MM.yyyy");
+        $("[data-test-id='date'] input").setValue(genDate);
         $("[data-test-id='city'] input").setValue("Москва");
         $("[data-test-id='agreement']").click();
         $("[data-test-id='name'] input").setValue("Петров Иван");
         $("[data-test-id='phone'] input").setValue("+79098909090");
 
         $(byText("Забронировать")).click();
-        SelenideElement result = $(Selectors.withText("Успешно")).should(Condition.visible, Duration.ofSeconds(15));
+        $(".notification__content").shouldHave(Condition.exactText("Встреча успешно забронирована на " + genDate),  Duration.ofSeconds(15)).should(Condition.visible);
+        //        SelenideElement result = $(Selectors.withText("Успешно")).should(Condition.visible,Condition.text(""), Duration.ofSeconds(15));
     }
 }
